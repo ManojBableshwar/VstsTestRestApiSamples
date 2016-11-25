@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 
 // https://www.nuget.org/packages/Microsoft.TeamFoundationServer.Client/
 using Microsoft.TeamFoundation.TestManagement.WebApi;
@@ -14,21 +13,25 @@ using Microsoft.VisualStudio.Services.Client;
 // https://www.nuget.org/packages/Microsoft.VisualStudio.Services.Client/
 using Microsoft.VisualStudio.Services.Common;
 
-namespace PublishResultsFromCsvAgainstBuild
+
+namespace QueryTestRunResultsAndFailBuild
 {
-    class PublishResultsFromCsvAgainstBuild
+    class QueryTestRunResultsAndFailBuild
     {
         static void Main(string[] args)
         {
+
 
             string collectionUri;
             //set to Uri of the TFS collection
             //if this code is running in Build/Release workflow, we will fetch collection Uri from enviromnent variable
             //See https://www.visualstudio.com/en-us/docs/build/define/variables for full list of agent enviromnent variables
-            if (Environment.GetEnvironmentVariable("TF_BUILD") == "True") {
+            if (Environment.GetEnvironmentVariable("TF_BUILD") == "True")
+            {
                 collectionUri = Environment.GetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI");
                 Console.WriteLine("Fetched Collection (or VSTS account) from environment variable SYSTEM_TEAMFOUNDATIONCOLLECTIONURI: {0}", collectionUri);
-            } else // set it to TFS instance of your choice 
+            }
+            else // set it to TFS instance of your choice 
             {
                 collectionUri = "http://buildmachine1:8080/tfs/TestDefault";
                 Console.WriteLine("Using Collection (or VSTS account): {0}", collectionUri);
@@ -62,13 +65,14 @@ namespace PublishResultsFromCsvAgainstBuild
                 Console.WriteLine("Fetched build number from environment variable BUILD_BUILDNUMBER: {0}", buildNumber);
 
                 //build id is the id associated with the build number, which we will use to associate the test run with... 
-                buildId = Convert.ToInt32( Environment.GetEnvironmentVariable("BUILD_BUILDID"));
+                buildId = Convert.ToInt32(Environment.GetEnvironmentVariable("BUILD_BUILDID"));
                 Console.WriteLine("Fetched build id from environment variable BUILD_BUILDID: {0}", buildId);
 
                 //build uri is a more elaborate form of build id, in the vstfs:///Build/Build/<id> format... 
                 //We will use this for querying test runs against this build...
                 buildUri = Environment.GetEnvironmentVariable("BUILD_BUILDURI");
                 Console.WriteLine("Fetched build uri from environment variable BUILD_BUILDURI: {0}", buildUri);
+
             }
             else //if the code is running in standalone mode, you'll have to use Build APIs to fetch the build number... 
             //see https://www.visualstudio.com/en-us/docs/integrate/api/build/overview for build APIs... 
@@ -77,67 +81,47 @@ namespace PublishResultsFromCsvAgainstBuild
                 buildId = 40;
                 buildUri = "vstfs:///Build/Build/40";
                 Console.WriteLine("Using build number: {0}; build id: {1}; build uri: {2}", buildNumber, buildId, buildUri);
-            }     
+            }
 
             //Client to use test run and test result APIs... 
+        
             TestManagementHttpClient client = connection.GetClient<TestManagementHttpClient>();
 
-            //Test run model to initialize test run parameters..
-            //For automated test runs, isAutomated must be set.. Else manual test run will be created..
+            //Query all test runs publishing against a build
 
-            //<<Q: do we want to mark run in progress here?>>
-            RunCreateModel TestRunModel = new RunCreateModel(name: "Sample test run from CSV file against buildNumber: " + buildNumber, isAutomated: true,
-                startedDate: DateTime.Now.ToString(), buildId: buildId);
+            IList<TestRun> TestRunsAgainstBuild = client.GetTestRunsAsync(projectId: teamProject, buildUri: buildUri).Result;
 
-            //Since we are doing a Asycn call, .Result will wait for the call to complete... 
-            TestRun testRun = client.CreateTestRunAsync(teamProject, TestRunModel).Result;
-            Console.WriteLine("Step 1: test run created -> " + testRun.Id + ": " + testRun.Name + " , Run url: " + testRun.WebAccessUrl);
 
-            string resultsFilePath;
-            if (args.Length == 0)
+            // if any of the test runs has tests that have not passed, then flag failure... 
+
+            bool notAllTestsPassed = false;
+            foreach (TestRun t in TestRunsAgainstBuild)
             {
-                resultsFilePath = "Results.csv";
-            }
-            else
-            {
-                resultsFilePath = args[0];
-            }
 
-            //List to hold results from parsed from CSV file... 
-            List<TestResultCreateModel> testResultsFromCsv = new List<TestResultCreateModel>();
+                if (t.TotalTests != t.PassedTests)
+                {
+                    notAllTestsPassed = true;
+                    Console.WriteLine("Test run: {0}; Total tests: {1}; Passed tests: {2} ", t.Name, t.TotalTests, t.PassedTests);
+                }
 
-            var reader = new StreamReader(File.OpenRead(resultsFilePath));
-            while (!reader.EndOfStream)
-            {
-                var line = reader.ReadLine();
-                var values = line.Split(',');
-                Console.WriteLine("Publishing test {0}", values[0]);
-
-                //Assign values from each line in CSV to result model... 
-                TestResultCreateModel testResultModel = new TestResultCreateModel();
-                testResultModel.TestCaseTitle = testResultModel.AutomatedTestName = values[0];
-                testResultModel.Outcome = values[1];
-                testResultModel.State = "Completed";
-                testResultModel.ErrorMessage = values[2];
-                testResultModel.StackTrace = values[3];
-                testResultModel.StartedDate = values[4];
-                testResultModel.CompletedDate = values[5];
-
-                //Add the result ot the results list... 
-                testResultsFromCsv.Add(testResultModel);
+                //though we don't need to get test results, 
+                //we are getting test results and printing tests that failed just to demo how to query results in a test run
+                IList<TestCaseResult> TestResutsInRun = client.GetTestResultsAsync(project: teamProject, runId: t.Id).Result;
+                foreach (TestCaseResult r in TestResutsInRun)
+                {
+                    Console.WriteLine("Test: {0}; Outcome {1}", r.TestCaseTitle, r.Outcome);
+                }
             }
 
-            //Publish the results... 
-            List<TestCaseResult> resultObj = client.AddTestResultsToTestRunAsync(testResultsFromCsv.ToArray(), teamProject, testRun.Id).Result;
-
-            Console.WriteLine("Step 2: test results published...");
-
-            //Mark the run complete... 
-            RunUpdateModel testRunUpdate = new RunUpdateModel(completedDate: DateTime.Now.ToString(), state: "Completed");
-            TestRun RunUpdateResult = client.UpdateTestRunAsync(teamProject, testRun.Id, testRunUpdate).Result;
-
-            Console.WriteLine("Step 3: Test run completed: " + RunUpdateResult.WebAccessUrl);
-
+            if (notAllTestsPassed)
+            {
+                Console.WriteLine("Not all tests passed.. Returning failure... ");
+                Environment.Exit(1);
+            } else
+            {
+                Console.WriteLine("All tests passed.. Returning success... ");
+                Environment.Exit(0);
+            }
         }
     }
 }
