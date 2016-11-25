@@ -14,11 +14,9 @@ using Microsoft.VisualStudio.Services.Client;
 // https://www.nuget.org/packages/Microsoft.VisualStudio.Services.Client/
 using Microsoft.VisualStudio.Services.Common;
 
-using System.Diagnostics;
-
-namespace PublishResultsFromCSV
+namespace PublishResultsFromCsvAgainstBuild
 {
-    class PublishResultsFromCSV
+    class PublishResultsFromCsvAgainstBuild
     {
         static void Main(string[] args)
         {
@@ -26,17 +24,14 @@ namespace PublishResultsFromCSV
             //set to Uri of the TFS collection
             //if this scipt is running in Build/Release workflow, we will fetch collection Uri from enviromnent variable
             //See https://www.visualstudio.com/en-us/docs/build/define/variables for full list of agent enviromnent variables
-            if (Environment.GetEnvironmentVariable("TF_BUILD") == "True")
-            {
+            if (Environment.GetEnvironmentVariable("TF_BUILD") == "True") {
                 collectionUri = Environment.GetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI");
                 Console.WriteLine("Fetched Collection (or VSTS account) from environment variable: {0}", collectionUri);
-            }
-            else
+            } else
             {
                 collectionUri = "http://buildmachine1:8080/tfs/TestDefault";
                 Console.WriteLine("Using Collection (or VSTS account): {0}", collectionUri);
             }
-
 
             //set the team project name in which the test results must be published... 
             // get team project name from the agent environment variables if the script is running in Build workflow..
@@ -51,6 +46,9 @@ namespace PublishResultsFromCSV
                 teamProject = "DefaultAgileGitProject";
                 Console.WriteLine("Using team project: {0}", teamProject);
             }
+            
+
+
 
             //authentication.. 
             VssConnection connection = new VssConnection(new Uri(collectionUri), new VssCredentials());
@@ -62,7 +60,7 @@ namespace PublishResultsFromCSV
             //For automated test runs, isAutomated must be set.. Else manual test run will be created..
 
             //<<Q: do we want to mark run in progress here?>>
-            RunCreateModel TestRunModel = new RunCreateModel(name: "Sample test run from CSV file", isAutomated: true, 
+            RunCreateModel TestRunModel = new RunCreateModel(name: "Sample test run from CSV file", isAutomated: true,
                 startedDate: DateTime.Now.ToString());
 
             //Since we are doing a Asycn call, .Result will wait for the call to complete... 
