@@ -81,7 +81,7 @@ namespace PublishResultsFromCsvAgainstBuild
             //For automated test runs, isAutomated must be set.. Else manual test run will be created..
 
             //<<Q: do we want to mark run in progress here?>>
-            RunCreateModel TestRunModel = new RunCreateModel(name: "Sample test run from CSV file", isAutomated: true,
+            RunCreateModel TestRunModel = new RunCreateModel(name: "Sample test run from CSV file against buildNumber: " + buildNumber, isAutomated: true,
                 startedDate: DateTime.Now.ToString(), buildId: buildId);
 
             //Since we are doing a Asycn call, .Result will wait for the call to complete... 

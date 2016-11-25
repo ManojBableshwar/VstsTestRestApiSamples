@@ -28,12 +28,10 @@ namespace PublishResultsFromCSV
             //set to Uri of the TFS collection
             //if this scipt is running in Build/Release workflow, we will fetch collection Uri from enviromnent variable
             //See https://www.visualstudio.com/en-us/docs/build/define/variables for full list of agent enviromnent variables
-            if (Environment.GetEnvironmentVariable("TF_BUILD") == "True")
-            {
+ if (Environment.GetEnvironmentVariable("TF_BUILD") == "True") {
                 collectionUri = Environment.GetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI");
                 Console.WriteLine("Fetched Collection (or VSTS account) from environment variable SYSTEM_TEAMFOUNDATIONCOLLECTIONURI: { 0}", collectionUri);
-            }
-            else // set it to TFS instance of your choice 
+            } else // set it to TFS instance of your choice 
             {
                 collectionUri = "http://buildmachine1:8080/tfs/TestDefault";
                 Console.WriteLine("Using Collection (or VSTS account): {0}", collectionUri);
