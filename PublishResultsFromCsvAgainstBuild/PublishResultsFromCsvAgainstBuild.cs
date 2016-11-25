@@ -20,18 +20,24 @@ namespace PublishResultsFromCsvAgainstBuild
     {
         static void Main(string[] args)
         {
+
+
+
             string collectionUri;
             //set to Uri of the TFS collection
-            //if this scipt is running in Build/Release workflow, we will fetch collection Uri from enviromnent variable
+            //if this code is running in Build/Release workflow, we will fetch collection Uri from enviromnent variable
             //See https://www.visualstudio.com/en-us/docs/build/define/variables for full list of agent enviromnent variables
             if (Environment.GetEnvironmentVariable("TF_BUILD") == "True") {
                 collectionUri = Environment.GetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI");
-                Console.WriteLine("Fetched Collection (or VSTS account) from environment variable: {0}", collectionUri);
-            } else
+                Console.WriteLine("Fetched Collection (or VSTS account) from environment variable SYSTEM_TEAMFOUNDATIONCOLLECTIONURI: { 0}", collectionUri);
+            } else // set it to TFS instance of your choice 
             {
                 collectionUri = "http://buildmachine1:8080/tfs/TestDefault";
                 Console.WriteLine("Using Collection (or VSTS account): {0}", collectionUri);
             }
+
+            //authentication.. 
+            VssConnection connection = new VssConnection(new Uri(collectionUri), new VssCredentials());
 
             //set the team project name in which the test results must be published... 
             // get team project name from the agent environment variables if the script is running in Build workflow..
@@ -39,19 +45,34 @@ namespace PublishResultsFromCsvAgainstBuild
             if (Environment.GetEnvironmentVariable("TF_BUILD") == "True")
             {
                 teamProject = Environment.GetEnvironmentVariable("SYSTEM_TEAMPROJECT");
-                Console.WriteLine("Fetched team project from environment variable: {0}", teamProject);
+                Console.WriteLine("Fetched team project from environment variable SYSTEM_TEAMPROJECT: {0}", teamProject);
             }
             else //else set it the team project of your choice... 
             {
                 teamProject = "DefaultAgileGitProject";
                 Console.WriteLine("Using team project: {0}", teamProject);
             }
-            
 
+            // get the build number to publis results against... 
 
+            string buildNumber; int buildId;
+            // if this code is running in build workflow, BUILD_BUILDNUMBER and BUILD_BUILDID environment variables have the build info... 
+            if (Environment.GetEnvironmentVariable("TF_BUILD") == "True")
+            {
+                //build number is human readable format of the build name, you can confiure it's format in build options..     
+                buildNumber = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
+                Console.WriteLine("Fetched build number from environment variable BUILD_BUILDNUMBER: {0}", buildNumber);
 
-            //authentication.. 
-            VssConnection connection = new VssConnection(new Uri(collectionUri), new VssCredentials());
+                //build id is the id associated with the build number, which we will use to associate the test run with... 
+                buildId = Convert.ToInt32( Environment.GetEnvironmentVariable("BUILD_BUILDID"));
+                Console.WriteLine("Fetched build id from environment variable BUILD_BUILDID: {0}", buildId);
+            }
+            else //if the code is running in standalone mode, you'll have to use Build APIs to fetch the build number... 
+            //see https://www.visualstudio.com/en-us/docs/integrate/api/build/overview for build APIs... 
+            {
+                buildNumber = "20161124.2";
+                buildId = 40;
+            }     
 
             //Client to use test run and test result APIs... 
             TestManagementHttpClient client = connection.GetClient<TestManagementHttpClient>();
@@ -61,7 +82,7 @@ namespace PublishResultsFromCsvAgainstBuild
 
             //<<Q: do we want to mark run in progress here?>>
             RunCreateModel TestRunModel = new RunCreateModel(name: "Sample test run from CSV file", isAutomated: true,
-                startedDate: DateTime.Now.ToString());
+                startedDate: DateTime.Now.ToString(), buildId: buildId);
 
             //Since we are doing a Asycn call, .Result will wait for the call to complete... 
             TestRun testRun = client.CreateTestRunAsync(teamProject, TestRunModel).Result;

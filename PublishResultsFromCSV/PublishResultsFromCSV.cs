@@ -22,6 +22,8 @@ namespace PublishResultsFromCSV
     {
         static void Main(string[] args)
         {
+
+
             string collectionUri;
             //set to Uri of the TFS collection
             //if this scipt is running in Build/Release workflow, we will fetch collection Uri from enviromnent variable
@@ -29,14 +31,16 @@ namespace PublishResultsFromCSV
             if (Environment.GetEnvironmentVariable("TF_BUILD") == "True")
             {
                 collectionUri = Environment.GetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI");
-                Console.WriteLine("Fetched Collection (or VSTS account) from environment variable: {0}", collectionUri);
+                Console.WriteLine("Fetched Collection (or VSTS account) from environment variable SYSTEM_TEAMFOUNDATIONCOLLECTIONURI: { 0}", collectionUri);
             }
-            else
+            else // set it to TFS instance of your choice 
             {
                 collectionUri = "http://buildmachine1:8080/tfs/TestDefault";
                 Console.WriteLine("Using Collection (or VSTS account): {0}", collectionUri);
             }
 
+            //authentication.. 
+            VssConnection connection = new VssConnection(new Uri(collectionUri), new VssCredentials());
 
             //set the team project name in which the test results must be published... 
             // get team project name from the agent environment variables if the script is running in Build workflow..
@@ -44,7 +48,7 @@ namespace PublishResultsFromCSV
             if (Environment.GetEnvironmentVariable("TF_BUILD") == "True")
             {
                 teamProject = Environment.GetEnvironmentVariable("SYSTEM_TEAMPROJECT");
-                Console.WriteLine("Fetched team project from environment variable: {0}", teamProject);
+                Console.WriteLine("Fetched team project from environment variable SYSTEM_TEAMPROJECT: {0}", teamProject);
             }
             else //else set it the team project of your choice... 
             {
@@ -52,8 +56,7 @@ namespace PublishResultsFromCSV
                 Console.WriteLine("Using team project: {0}", teamProject);
             }
 
-            //authentication.. 
-            VssConnection connection = new VssConnection(new Uri(collectionUri), new VssCredentials());
+
 
             //Client to use test run and test result APIs... 
             TestManagementHttpClient client = connection.GetClient<TestManagementHttpClient>();
