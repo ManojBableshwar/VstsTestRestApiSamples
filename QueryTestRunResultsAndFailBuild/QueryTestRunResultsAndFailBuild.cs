@@ -24,8 +24,8 @@ namespace QueryTestRunResultsAndFailBuild
 
             string collectionUri;
             //set to Uri of the TFS collection
-            //if this code is running in Build/Release workflow, we will fetch collection Uri from enviromnent variable
-            //See https://www.visualstudio.com/en-us/docs/build/define/variables for full list of agent enviromnent variables
+            //if this code is running in Build/Release workflow, we will fetch collection Uri from environment variable
+            //See https://www.visualstudio.com/en-us/docs/build/define/variables for full list of agent environment variables
             if (Environment.GetEnvironmentVariable("TF_BUILD") == "True")
             {
                 collectionUri = Environment.GetEnvironmentVariable("SYSTEM_TEAMFOUNDATIONCOLLECTIONURI");
