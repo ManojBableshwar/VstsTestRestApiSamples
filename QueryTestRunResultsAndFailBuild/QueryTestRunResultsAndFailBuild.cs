@@ -97,13 +97,11 @@ namespace QueryTestRunResultsAndFailBuild
             bool notAllTestsPassed = false;
             foreach (TestRun t in TestRunsAgainstBuild)
             {
-
+                Console.WriteLine("Test run: {0}; Total tests: {1}; Passed tests: {2} ", t.Name, t.TotalTests, t.PassedTests);
                 if (t.TotalTests != t.PassedTests)
                 {
                     notAllTestsPassed = true;
-                    Console.WriteLine("Test run: {0}; Total tests: {1}; Passed tests: {2} ", t.Name, t.TotalTests, t.PassedTests);
                 }
-
                 //though we don't need to get test results, 
                 //we are getting test results and printing tests that failed just to demo how to query results in a test run
                 IList<TestCaseResult> TestResutsInRun = client.GetTestResultsAsync(project: teamProject, runId: t.Id).Result;

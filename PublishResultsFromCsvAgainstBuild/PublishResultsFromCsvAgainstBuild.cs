@@ -51,7 +51,7 @@ namespace PublishResultsFromCsvAgainstBuild
                 Console.WriteLine("Using team project: {0}", teamProject);
             }
 
-            // get the build number to publis results against... 
+            // get the build number to publish results against... 
 
             string buildNumber, buildUri; int buildId;
             // if this code is running in build workflow, BUILD_BUILDNUMBER and BUILD_BUILDID environment variables have the build info... 
@@ -91,7 +91,7 @@ namespace PublishResultsFromCsvAgainstBuild
 
             //Since we are doing a Asycn call, .Result will wait for the call to complete... 
             TestRun testRun = client.CreateTestRunAsync(teamProject, TestRunModel).Result;
-            Console.WriteLine("Step 1: test run created -> " + testRun.Id + ": " + testRun.Name + " , Run url: " + testRun.WebAccessUrl);
+            Console.WriteLine("Step 1: test run created -> {0}: {1}; Run url: {3} ", testRun.Id, testRun.Name, testRun.WebAccessUrl);
 
             string resultsFilePath;
             if (args.Length == 0)
@@ -117,6 +117,9 @@ namespace PublishResultsFromCsvAgainstBuild
                 TestResultCreateModel testResultModel = new TestResultCreateModel();
                 testResultModel.TestCaseTitle = testResultModel.AutomatedTestName = values[0];
                 testResultModel.Outcome = values[1];
+                //Setting state to completed since we are only publishing results. 
+                //In advanced scenarios, you can choose to create a test result, 
+                // move it into in progress state while test test acutally runs and finally update the outcome with state as completed
                 testResultModel.State = "Completed";
                 testResultModel.ErrorMessage = values[2];
                 testResultModel.StackTrace = values[3];
@@ -136,7 +139,7 @@ namespace PublishResultsFromCsvAgainstBuild
             RunUpdateModel testRunUpdate = new RunUpdateModel(completedDate: DateTime.Now.ToString(), state: "Completed");
             TestRun RunUpdateResult = client.UpdateTestRunAsync(teamProject, testRun.Id, testRunUpdate).Result;
 
-            Console.WriteLine("Step 3: Test run completed: " + RunUpdateResult.WebAccessUrl);
+            Console.WriteLine("Step 3: Test run completed: {0}", RunUpdateResult.WebAccessUrl);
 
         }
     }

@@ -68,7 +68,7 @@ namespace PublishResultsFromCSV
 
             //Since we are doing a Asycn call, .Result will wait for the call to complete... 
             TestRun testRun = client.CreateTestRunAsync(teamProject, TestRunModel).Result;
-            Console.WriteLine("Step 1: test run created -> " + testRun.Id + ": " + testRun.Name + " , Run url: " + testRun.WebAccessUrl);
+            Console.WriteLine("Step 1: test run created -> {0}: {1}; Run url: {3} ", testRun.Id, testRun.Name, testRun.WebAccessUrl);
 
             string resultsFilePath;
             if (args.Length == 0)
@@ -94,7 +94,10 @@ namespace PublishResultsFromCSV
                 TestResultCreateModel testResultModel = new TestResultCreateModel();
                 testResultModel.TestCaseTitle = testResultModel.AutomatedTestName = values[0];
                 testResultModel.Outcome = values[1];
-                testResultModel.State = "Completed";
+                //Setting state to completed since we are only publishing results. 
+                //In advanced scenarios, you can choose to create a test result, 
+                // move it into in progress state while test test acutally runs and finally update the outcome with state as completed
+                testResultModel.State = "Completed"; 
                 testResultModel.ErrorMessage = values[2];
                 testResultModel.StackTrace = values[3];
                 testResultModel.StartedDate = values[4];
@@ -113,7 +116,7 @@ namespace PublishResultsFromCSV
             RunUpdateModel testRunUpdate = new RunUpdateModel(completedDate: DateTime.Now.ToString(), state: "Completed");
             TestRun RunUpdateResult = client.UpdateTestRunAsync(teamProject, testRun.Id, testRunUpdate).Result;
 
-            Console.WriteLine("Step 3: Test run completed: " + RunUpdateResult.WebAccessUrl);
+            Console.WriteLine("Step 3: Test run completed: {0} ", RunUpdateResult.WebAccessUrl);
 
         }
     }
