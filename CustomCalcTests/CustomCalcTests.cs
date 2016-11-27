@@ -157,7 +157,7 @@ namespace CustomCalcTests
             catch (Exception e)
             {
 
-                output = "TestDiv,Error,Tested 5 * 0;  Expected: infinity :-) ; Actual: Exception found; see stack trace.," + e.Message + "," + DateTime.Now.ToString() + "," + DateTime.Now.ToString();
+                output = "TestDiv,Error,Tested 5 / 0;  Expected: infinity :-) ; Actual: Exception found; see stack trace.," + e.Message + "," + DateTime.Now.ToString() + "," + DateTime.Now.ToString();
                 output = output.Replace("\n", "\t"); // else, newlines from stack trace will mess with csv file... 
                 output = output.Replace("\n", "\t"); // else, newlines from stack trace will mess with csv file... 
                 Console.WriteLine(output);
