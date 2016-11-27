@@ -91,7 +91,7 @@ namespace PublishResultsFromCsvAgainstBuild
 
             //Since we are doing a Asycn call, .Result will wait for the call to complete... 
             TestRun testRun = client.CreateTestRunAsync(teamProject, TestRunModel).Result;
-            Console.WriteLine("Step 1: test run created -> {0}: {1}; Run url: {3} ", testRun.Id, testRun.Name, testRun.WebAccessUrl);
+            Console.WriteLine("Step 1: test run created -> {0}: {1}; Run url: {2} ", testRun.Id, testRun.Name, testRun.WebAccessUrl);
 
             string resultsFilePath;
             if (args.Length == 0)
