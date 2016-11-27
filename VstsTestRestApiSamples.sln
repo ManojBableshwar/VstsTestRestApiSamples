@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublishResultsFromCsvAgains
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryTestRunResultsAndFailBuild", "QueryTestRunResultsAndFailBuild\QueryTestRunResultsAndFailBuild.csproj", "{3408DE14-98D1-4CD8-9037-B18D6EE57A0E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublishResultsFromCsvAgainstRelease", "PublishResultsFromCsvAgainstRelease\PublishResultsFromCsvAgainstRelease.csproj", "{3B93C5A0-9963-4598-896C-BCEA3164100E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{3408DE14-98D1-4CD8-9037-B18D6EE57A0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3408DE14-98D1-4CD8-9037-B18D6EE57A0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3408DE14-98D1-4CD8-9037-B18D6EE57A0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B93C5A0-9963-4598-896C-BCEA3164100E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B93C5A0-9963-4598-896C-BCEA3164100E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B93C5A0-9963-4598-896C-BCEA3164100E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B93C5A0-9963-4598-896C-BCEA3164100E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
