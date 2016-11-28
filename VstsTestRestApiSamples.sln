@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryTestRunResultsAndFailR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomCalcTestsWithAttachments", "CustomCalcTestsWithAttachments\CustomCalcTestsWithAttachments.csproj", "{D41F2E44-FEAC-48B4-A460-9CB9E2593D0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublishResultsFromCsvWithAttachments", "PublishResultsFromCsvWithAttachments\PublishResultsFromCsvWithAttachments.csproj", "{B0E7E70A-2865-4DFD-ADED-9DA9301B4245}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{D41F2E44-FEAC-48B4-A460-9CB9E2593D0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D41F2E44-FEAC-48B4-A460-9CB9E2593D0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D41F2E44-FEAC-48B4-A460-9CB9E2593D0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0E7E70A-2865-4DFD-ADED-9DA9301B4245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0E7E70A-2865-4DFD-ADED-9DA9301B4245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0E7E70A-2865-4DFD-ADED-9DA9301B4245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0E7E70A-2865-4DFD-ADED-9DA9301B4245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

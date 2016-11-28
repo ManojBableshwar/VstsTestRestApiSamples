@@ -152,7 +152,7 @@ namespace PublishResultsFromCsvAgainstRelease
             }
 
             //Publish the results... 
-            List<TestCaseResult> resultObj = client.AddTestResultsToTestRunAsync(testResultsFromCsv.ToArray(), teamProject, testRun.Id).Result;
+            List<TestCaseResult> publishedResults = client.AddTestResultsToTestRunAsync(testResultsFromCsv.ToArray(), teamProject, testRun.Id).Result;
 
             Console.WriteLine("Step 2: test results published...");
 

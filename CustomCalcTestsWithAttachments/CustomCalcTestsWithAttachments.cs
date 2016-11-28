@@ -57,14 +57,13 @@ namespace CustomCalcTestsWithAttachments
             var sourceSwitch = new SourceSwitch("SourceSwitch", "Verbose");
             CalcTraceSource.Switch = sourceSwitch;
             // simple addition test - this is expeced to fail since there is a bug in add logic... 
+            string traceFilePath = resultsFileDir + "/" + TestName + ".log";
+            TextWriterTraceListener textListener = new TextWriterTraceListener(traceFilePath);
+            CalcTraceSource.Listeners.Add(textListener);
             double mathResult;
             string output, startTime = null, endTime = null, result;
             try
             {
-                string traceFilePath = resultsFileDir + "/" + TestName + ".log";
-                TextWriterTraceListener textListener = new TextWriterTraceListener(traceFilePath);
-                CalcTraceSource.Listeners.Add(textListener);
-
                 //record start time of the test... 
                 startTime = DateTime.Now.ToString();
                 CalcTraceSource.TraceInformation("Starting test at time: {0}", startTime);
@@ -78,7 +77,7 @@ namespace CustomCalcTestsWithAttachments
                 //write the test result... 
 
                 result = mathResult == expectedResult ? "Passed" : "Failed";
-                output = String.Format("{0},{1},Tested {2} {3} {4}); Expected {5}; Actual: {6};,{7},{8}",TestName,result,num1,operation,num2,expectedResult, mathResult, startTime,endTime);
+                output = String.Format("{0},{1},Tested {2} {3} {4}); Expected {5}; Actual: {6};,,{7},{8},{9}",TestName,result,num1,operation,num2,expectedResult, mathResult, startTime,endTime, traceFilePath);
                 Console.WriteLine(output);
                 resultsFile.WriteLine(output);
                 CalcTraceSource.TraceInformation("Output: " + output);
@@ -87,7 +86,7 @@ namespace CustomCalcTestsWithAttachments
             catch (Exception e)
             {
                 result = "Error";
-                output = String.Format("{0},{1},Tested {2} {3} {4}); Expected {5}; Actual: {6};,{7},{8}", TestName, result, num1, operation, num2, expectedResult, e.Message, startTime, endTime);
+                output = String.Format("{0},{1},Tested {2} {3} {4}); Expected {5}; Actual: {6};,,{7},{8},{9}", TestName, result, num1, operation, num2, expectedResult, e.Message, startTime, endTime, traceFilePath);
                 output = output.Replace("\n", "\t"); // else, newlines from stack trace will mess with csv file... 
                 output = output.Replace("\n", "\t"); // else, newlines from stack trace will mess with csv file... 
                 Console.WriteLine(output);
@@ -95,7 +94,7 @@ namespace CustomCalcTestsWithAttachments
                 CalcTraceSource.TraceEvent(TraceEventType.Error, 2, "Test errored out...Output:\n" + output + "\n");
             }
 
-
+            CalcTraceSource.Listeners.Remove(textListener);
             CalcTraceSource.Close();
         }
     }
