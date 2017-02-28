@@ -111,12 +111,12 @@ namespace QueryTestRunResultsAndFailRelease
             //Hence we will use GetTestRunsByQueryAsync... 
 
             QueryModel runQuery = new QueryModel("Select * from TestRun where releaseUri='" + releaseUri + "' and releaseEnvironmentUri='" + releaseEnvironmentUri + "'");
-            IList <TestRun> TestRunsAgainstBuild = client.GetTestRunsByQueryAsync(runQuery,teamProject).Result;
+            IList <TestRun> TestRunsAgainstRelease = client.GetTestRunsByQueryAsync(runQuery,teamProject).Result;
 
             // if any of the test runs has tests that have not passed, then flag failure... 
 
             bool notAllTestsPassed = false;
-            foreach (TestRun t in TestRunsAgainstBuild)
+            foreach (TestRun t in TestRunsAgainstRelease)
             {
                 Console.WriteLine("Test run: {0}; Total tests: {1}; Passed tests: {2} ", t.Name, t.TotalTests, t.PassedTests);
                 if (t.TotalTests != t.PassedTests)
