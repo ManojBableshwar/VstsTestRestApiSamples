@@ -1,4 +1,4 @@
-﻿# Tool to bulk delete test case work items in TFS or VSTS
+﻿# Sample to bulk delete test case work items in TFS or VSTS
 
 ## Introduction
 
@@ -7,7 +7,7 @@ You can only delete single test case at a time in the TFS/VSTS Web UI. We have s
 Having said that, there are genuine scenarios where bulk deletion of test case work items is needed. Examples include migration scenarios where a tool had incorrectly created test cases, etc. This is a tool to bulk delete test case work items. 
 
 ## Pre-requisites
-Create a query of test cases with Work item queries to be bulk deleted and then use this tool.
+Create a work item query of test cases that have to be bulk deleted and then use this sample against the query.
 
 [Learn how to create PAT token](https://docs.microsoft.com/en-us/vsts/git/_shared/personal-access-tokens)  
 

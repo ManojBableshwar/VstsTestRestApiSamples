@@ -16,7 +16,7 @@ namespace BulkDeleteTestCaseWorkItems
     {
         static void Main(string[] args)
         {
-            //Pre-req: Create a query of test cases with Work item queries to be bulk deleted and then use this tool
+            //Pre-req: Create a query of test cases with Work item queries to be bulk deleted and then use this sample
             //Command line usage: 
             //BulkDeleteTestCaseWorkItems.exe <account or tfs server> <team project name> <query in quotes> <pat token>
             //Example: BulkDeleteTestCaseWorkItems.exe https://manojbableshwar.visualstudio.com HealthClinic "Shared Queries/Troubleshooting/P4 Test Cases" <pat token>
