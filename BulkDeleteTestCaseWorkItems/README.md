@@ -8,7 +8,9 @@ Having said that, there are genuine scenarios where bulk deletion of test case w
 
 ## Pre-requisites
 Create a query of test cases with Work item queries to be bulk deleted and then use this tool.
+
 [Learn how to create PAT token](https://docs.microsoft.com/en-us/vsts/git/_shared/personal-access-tokens)  
+
 [Learn how to create work item queries](https://docs.microsoft.com/en-us/vsts/work/track/using-queries)
 
 ## Command line usage
