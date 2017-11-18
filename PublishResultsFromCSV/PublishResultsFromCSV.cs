@@ -33,7 +33,8 @@ namespace PublishResultsFromCSV
                 Console.WriteLine("Fetched Collection (or VSTS account) from environment variable SYSTEM_TEAMFOUNDATIONCOLLECTIONURI: {0}", collectionUri);
             } else // set it to TFS instance of your choice 
             {
-                collectionUri = "http://buildmachine1:8080/tfs/TestDefault";
+                //collectionUri = "http://buildmachine1:8080/tfs/TestDefault";
+                collectionUri = "https://manojbableshwar.visualstudio.com";
                 Console.WriteLine("Using Collection (or VSTS account): {0}", collectionUri);
             }
 
@@ -50,7 +51,7 @@ namespace PublishResultsFromCSV
             }
             else //else set it the team project of your choice... 
             {
-                teamProject = "DefaultAgileGitProject";
+                teamProject = "PartsUnlimited";
                 Console.WriteLine("Using team project: {0}", teamProject);
             }
 
@@ -64,7 +65,7 @@ namespace PublishResultsFromCSV
 
             //<<Q: do we want to mark run in progress here?>>
             RunCreateModel TestRunModel = new RunCreateModel(name: "Sample test run from CSV file", isAutomated: true, 
-                startedDate: DateTime.Now.ToString());
+                startedDate: DateTime.Now.ToString(), comment:"create run comment");
 
             //Since we are doing a Asycn call, .Result will wait for the call to complete... 
             TestRun testRun = client.CreateTestRunAsync(teamProject, TestRunModel).Result;
