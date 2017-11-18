@@ -19,7 +19,7 @@ BulkDeleteTestCaseWorkItems.exe <account or tfs server including https or http> 
 ## Sample output
 ```
 BulkDeleteTestCaseWorkItems.exe https://manojbableshwar.visualstudio.com HealthClinic "Shared Queries/Troubleshooting/P4 Test Cases" <pat token>
-Found 4 work items returned in query 'Shared Queries/Troubleshooting/P4 Test Cases'
+Found 4 work items in query 'Shared Queries/Troubleshooting/P4 Test Cases'.. Proceeding to delete...
 Deleted testcase: 4020 => hello world test case
 Deleted testcase: 4021 => login test case
 Deleted testcase: 4022 => logout test case
