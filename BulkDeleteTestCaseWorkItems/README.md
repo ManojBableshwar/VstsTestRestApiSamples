@@ -8,19 +8,21 @@ Having said that, there are genuine scenarios where bulk deletion of test case w
 
 ## Pre-requisites
 Create a query of test cases with Work item queries to be bulk deleted and then use this tool.
-[Learn how to create PAT token](https://docs.microsoft.com/en-us/vsts/git/_shared/personal-access-tokens)
+[Learn how to create PAT token](https://docs.microsoft.com/en-us/vsts/git/_shared/personal-access-tokens)  
 [Learn how to create work item queries](https://docs.microsoft.com/en-us/vsts/work/track/using-queries)
 
 ## Command line usage
 BulkDeleteTestCaseWorkItems.exe <account or tfs server including https or http> <team project name> <query containing test case work items, in quotes> <pat token>
 
 ## Sample output
+```
 BulkDeleteTestCaseWorkItems.exe https://manojbableshwar.visualstudio.com HealthClinic "Shared Queries/Troubleshooting/P4 Test Cases" <pat token>
 Found 4 work items returned in query 'Shared Queries/Troubleshooting/P4 Test Cases'
 Deleted testcase: 4020 => hello world test case
 Deleted testcase: 4021 => login test case
 Deleted testcase: 4022 => logout test case
 Deleted testcase: 4023 => add to cart test case
+```
 
 ## Help
 Email us at DevOps_Tools@microsoft.com for help... 
