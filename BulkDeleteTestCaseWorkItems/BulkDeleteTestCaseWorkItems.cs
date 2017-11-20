@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.VisualStudio.Services.Client;
 
 namespace BulkDeleteTestCaseWorkItems
 {
@@ -21,16 +22,26 @@ namespace BulkDeleteTestCaseWorkItems
             //BulkDeleteTestCaseWorkItems.exe <account or tfs server> <team project name> <query in quotes> <pat token>
             //Example: BulkDeleteTestCaseWorkItems.exe https://manojbableshwar.visualstudio.com HealthClinic "Shared Queries/Troubleshooting/P4 Test Cases" <pat token>
 
-            Uri accountUri = new Uri(args[0]);
-            string teamProjectName = args[1];
-            string witTestCaseQuery = args[2];
-            string personalAccessToken = args[3];  // See https://www.visualstudio.com/docs/integrate/get-started/authentication/pats                
-
-            // Create a connection to the account - use this for pat auth (maninly VSTS)
-            //VssConnection connection = new VssConnection(accountUri, new VssBasicCredential(string.Empty, personalAccessToken));
-
-            // Create a connection to the account - use this TFS auth
-            VssConnection connection = new VssConnection(accountUri, new VssCredentials());
+            Uri accountUri; string teamProjectName, witTestCaseQuery, personalAccessToken; VssConnection connection;
+            if (args.Length < 3 || args.Length > 4)
+            {
+                Console.WriteLine("Incomplete arguments. See: https://github.com/ManojBableshwar/VstsTestRestApiSamples/tree/master/BulkDeleteTestCaseWorkItems");
+                return;
+            }
+            accountUri = new Uri(args[0]);
+            teamProjectName = args[1];
+            witTestCaseQuery = args[2];
+            if (args.Length == 4)
+            {
+                // Create a connection to the account - use this for pat auth 
+                personalAccessToken = args[3];  // See https://www.visualstudio.com/docs/integrate/get-started/authentication/pats       
+                connection = new VssConnection(accountUri, new VssBasicCredential(string.Empty, personalAccessToken));
+            } 
+            else
+            {
+                // Create a connection to the account using client auth when pat is not available, so that users can auth using username/password
+                connection = new VssConnection(accountUri, new VssClientCredentials());
+            }
 
             // Get an instance of the work item tracking client to query test case work items to be deleted
             WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();

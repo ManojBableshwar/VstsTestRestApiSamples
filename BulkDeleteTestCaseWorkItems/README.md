@@ -14,7 +14,12 @@ Create a work item query of test cases that have to be bulk deleted and then use
 [Learn how to create work item queries](https://docs.microsoft.com/en-us/vsts/work/track/using-queries)
 
 ## Command line usage
+
 BulkDeleteTestCaseWorkItems.exe <account or tfs server including https or http> <team project name> <query containing test case work items, in quotes> <pat token>
+
+or if PAT is not available - in this case user will be prompted to login
+
+BulkDeleteTestCaseWorkItems.exe <account or tfs server including https or http> <team project name> <query containing test case work items, in quotes>
 
 ## Sample output
 ```
