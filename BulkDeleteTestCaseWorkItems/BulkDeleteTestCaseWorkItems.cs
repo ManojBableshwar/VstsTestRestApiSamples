@@ -25,10 +25,13 @@ namespace BulkDeleteTestCaseWorkItems
             string teamProjectName = args[1];
             string witTestCaseQuery = args[2];
             string personalAccessToken = args[3];  // See https://www.visualstudio.com/docs/integrate/get-started/authentication/pats                
-            
-            // Create a connection to the account
-            VssConnection connection = new VssConnection(accountUri, new VssBasicCredential(string.Empty, personalAccessToken));
-           
+
+            // Create a connection to the account - use this for pat auth (maninly VSTS)
+            //VssConnection connection = new VssConnection(accountUri, new VssBasicCredential(string.Empty, personalAccessToken));
+
+            // Create a connection to the account - use this TFS auth
+            VssConnection connection = new VssConnection(accountUri, new VssCredentials());
+
             // Get an instance of the work item tracking client to query test case work items to be deleted
             WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
